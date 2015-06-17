@@ -27,7 +27,8 @@ class TicketTemplateTestCase(unittest.TestCase):
 
         env_path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
         self.env = Environment(env_path, create=True)
-        self.db = self.env.get_db_cnx()
+        self.db = self.env.db_transaction
+        self.db.__enter__()
 
         self.compmgr = ComponentManager()
 
@@ -36,7 +37,7 @@ class TicketTemplateTestCase(unittest.TestCase):
         setattr(self.tt, "env", self.env)
 
     def tearDown(self):
-        self.db.close()
+        self.db.__exit__(None, None, None)
         self.env.shutdown() # really closes the db connections
         shutil.rmtree(self.env.path)
 

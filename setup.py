@@ -36,7 +36,7 @@ else:
 
 setup(
     name='TracTicketTemplate',
-    version='0.9',
+    version='0.9.1',
     packages=['tickettemplate'],
     package_data={'tickettemplate': ['*.txt', 'templates/*.*', 'htdocs/*.*',
                                      'tests/*.*', 'locale/*.*',

@@ -75,17 +75,16 @@ class TicketTemplateModule(Component):
 
     def environment_created(self):
         # Create the required tables
-        db = self.env.get_db_cnx()
-        connector, _ = DatabaseManager(self.env)._get_connector()
-        cursor = db.cursor()
-        for table in schema:
-            for stmt in connector.to_sql(table):
-                cursor.execute(stmt)
+        with self.env.db_transaction as db:
+            connector, _ = DatabaseManager(self.env).get_connector()
+            cursor = db.cursor()
+            for table in schema:
+                for stmt in connector.to_sql(table):
+                    cursor.execute(stmt)
 
-        # Insert a global version flag
-        cursor.execute("INSERT INTO system (name,value) "
-                       "VALUES ('tt_version',%s)", (schema_version,))
-        db.commit()
+            # Insert a global version flag
+            cursor.execute("INSERT INTO system (name,value) "
+                           "VALUES ('tt_version',%s)", (schema_version,))
 
         # Create some default templates
 
@@ -129,7 +128,6 @@ class TicketTemplateModule(Component):
         accept list of tuples called templates and insert into database.
         example: templates = [('tt_name','tt_value'),]
         """
-        db = self.env.get_db_cnx()
         now = int(time.time())
         for tt_name, tt_value in templates:
             record = [
@@ -143,7 +141,6 @@ class TicketTemplateModule(Component):
             # increment timestamp; other code expects it to be unique
             now += 1
 
-        db.commit()
 
     # IAdminCommandProvider methods
 
