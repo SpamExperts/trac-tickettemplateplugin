@@ -308,19 +308,22 @@ jQuery(document).ready(function($) {
       return;
     }
 
-    if (evt.type == "change" && isLoad == false) {
+    var ticketType = queryResult.field_value_mapping[tt_name];
+    if ($.isEmptyObject(ticketType)) {
+      ticketType = queryResult.field_value_mapping['default'];
+    }
+    if ($.isEmptyObject(ticketType)){
+      return;
+    }
+
+    var targetElem = document.getElementById('field-description');
+    if (evt.type == "change" && isLoad == false && $.trim(targetElem.value) != "") {
       var answer = confirm("${_('Replace ticket content with template?')}");
       if (!answer) {
         return;
       }
     }
-
-    var ticketType = queryResult.field_value_mapping[tt_name];
-    if (!ticketType) {
-      ticketType = queryResult.field_value_mapping['default'];
-    }
     _updateTargetElem(ticketType);
-
   }
 
   function initTypeChanged(reapplyTemplate) {
