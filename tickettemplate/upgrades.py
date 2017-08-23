@@ -164,7 +164,7 @@ def add_tt_custom(env, db):
     """Add table tt_custom."""
     from trac.db import DatabaseManager
 
-    connector, _ = DatabaseManager(env)._get_connector()
+    connector, _ = DatabaseManager(env).get_connector()
     # cursor = db.cursor()
     # table = schema[0]
     # for stmt in connector.to_sql(table):

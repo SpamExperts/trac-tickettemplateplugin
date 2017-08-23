@@ -94,14 +94,16 @@ class TicketTemplateModule(Component):
         else:
             self.ticket_template_import(self.json_template_file)
 
-    def environment_needs_upgrade(self, db):
+    def environment_needs_upgrade(self, db=None):
+      with self.env.db_transaction as db:
         cursor = db.cursor()
         cursor.execute("SELECT value FROM system WHERE name='tt_version'")
         row = cursor.fetchone()
         if not row or int(row[0]) < schema_version:
             return True
 
-    def upgrade_environment(self, db):
+    def upgrade_environment(self, db=None):
+      with self.env.db_transaction as db:
         cursor = db.cursor()
         cursor.execute("SELECT value FROM system WHERE name='tt_version'")
         row = cursor.fetchone()
